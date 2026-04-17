@@ -149,14 +149,14 @@ def bar_chart(counts, title, color_seq=None, orientation="h"):
             marker_color=colors,
             text=[f"{v} ({v/counts.sum()*100:.0f}%)" for v in counts.values],
             textposition="outside",
-            textfont=dict(size=12),
+            textfont=dict(size=13, color="#ffffff", family="DM Sans"),
         ))
         fig.update_layout(
-            title=dict(text=title, font=dict(size=13, color=COLORS["primary"]), x=0),
+            title=dict(text=title, font=dict(size=13, color="#ffffff"), x=0),
             xaxis=dict(showgrid=False, zeroline=False, showticklabels=False),
-            yaxis=dict(autorange="reversed"),
+            yaxis=dict(autorange="reversed", tickfont=dict(color="#e2e8f0", size=12)),
             margin=dict(l=10, r=80, t=40, b=10),
-            plot_bgcolor="white", paper_bgcolor="white",
+            plot_bgcolor="#1e293b", paper_bgcolor="#1e293b",
             height=max(220, len(counts)*52 + 60),
             showlegend=False,
         )
@@ -166,14 +166,15 @@ def bar_chart(counts, title, color_seq=None, orientation="h"):
             marker_color=colors,
             text=[f"{v}\n({v/counts.sum()*100:.0f}%)" for v in counts.values],
             textposition="outside",
-            textfont=dict(size=11),
+            textfont=dict(size=12, color="#ffffff", family="DM Sans"),
         ))
         fig.update_layout(
-            title=dict(text=title, font=dict(size=13, color=COLORS["primary"]), x=0),
-            yaxis=dict(showgrid=True, gridcolor="#f0f0f0", zeroline=False),
-            xaxis=dict(showgrid=False),
+            title=dict(text=title, font=dict(size=13, color="#ffffff"), x=0),
+            yaxis=dict(showgrid=True, gridcolor="#334155", zeroline=False,
+                       tickfont=dict(color="#e2e8f0")),
+            xaxis=dict(showgrid=False, tickfont=dict(color="#e2e8f0")),
             margin=dict(l=10, r=20, t=40, b=10),
-            plot_bgcolor="white", paper_bgcolor="white",
+            plot_bgcolor="#1e293b", paper_bgcolor="#1e293b",
             height=300, showlegend=False,
         )
     return fig
@@ -185,13 +186,13 @@ def donut_chart(counts, title):
         marker=dict(colors=COLORS["palette"][:len(counts)],
                     line=dict(color="white", width=2)),
         textinfo="label+percent",
-        textfont=dict(size=11),
+        textfont=dict(size=12, color="#ffffff"),
         insidetextorientation="radial",
     ))
     fig.update_layout(
-        title=dict(text=title, font=dict(size=13, color=COLORS["primary"]), x=0),
+        title=dict(text=title, font=dict(size=13, color="#ffffff"), x=0),
         margin=dict(l=10, r=10, t=40, b=10),
-        plot_bgcolor="white", paper_bgcolor="white",
+        plot_bgcolor="#1e293b", paper_bgcolor="#1e293b",
         height=300, showlegend=False,
     )
     return fig
@@ -376,9 +377,12 @@ elif page == "😤 Pain Points":
         ))
     fig.update_layout(
         barmode="stack", height=340,
-        plot_bgcolor="white", paper_bgcolor="white",
-        yaxis=dict(title="% of respondents", gridcolor="#f0f0f0"),
-        legend=dict(orientation="h", yanchor="bottom", y=1.02),
+        plot_bgcolor="#1e293b", paper_bgcolor="#1e293b",
+        yaxis=dict(title="% of respondents", gridcolor="#334155",
+                   tickfont=dict(color="#e2e8f0"), titlefont=dict(color="#e2e8f0")),
+        xaxis=dict(tickfont=dict(color="#e2e8f0")),
+        legend=dict(orientation="h", yanchor="bottom", y=1.02,
+                    font=dict(color="#e2e8f0")),
         margin=dict(l=10, r=10, t=30, b=10),
     )
     st.plotly_chart(fig, use_container_width=True)
