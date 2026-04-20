@@ -396,7 +396,7 @@ elif page == "😤 Pain Points":
     )
     st.plotly_chart(fig, use_container_width=True)
     st.markdown("""<div class="insight-box">
-        📌 颜色越深（红/橙）代表该组合人数越多。右上角聚集说明<strong>找车时间越长，迟到越频繁</strong>。
+        📌 Darker cells (orange/red) indicate more respondents in that combination. Concentration toward the top-right suggests <strong>longer parking search times are associated with more frequent tardiness</strong>.
     </div>""", unsafe_allow_html=True)
 
 # ═══════════════════════════════════════════════════════════════════════════
