@@ -247,7 +247,7 @@ if page == "📊 Overview":
     pct_car     = (dff["Q2"] == 1).sum() / n * 100 if n else 0
     pct_late    = dff["Q6"].isin([3,4,5]).sum() / n * 100 if n else 0
     pct_app     = (dff["Q15"] == 1).sum() / n * 100 if n else 0
-    avg_rating  = dff["Q17"].mean() if n else 0
+    avg_rating  = (6 - dff["Q17"]).mean() if n else 0
 
     c1, c2, c3, c4 = st.columns(4)
     with c1:
@@ -268,7 +268,7 @@ if page == "📊 Overview":
     with c4:
         st.markdown(f"""<div class="metric-card green">
             <div class="metric-value">{avg_rating:.1f}/5</div>
-            <div class="metric-label">Avg parking rating (5=worst)</div>
+            <div class="metric-label">Avg parking rating (5=best)</div>
         </div>""", unsafe_allow_html=True)
 
     st.markdown("<br>", unsafe_allow_html=True)
