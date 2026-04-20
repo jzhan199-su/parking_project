@@ -355,37 +355,49 @@ elif page == "😤 Pain Points":
         counts = vc("Q9", MAPS["Q9"])
         st.plotly_chart(donut_chart(counts, "Ever Left Class Early to Avoid Ticket"), use_container_width=True)
 
-    # Cross-tab: Year vs Stress
-    st.markdown('<div class="section-header">Stress Level by Year (Cross-tab)</div>', unsafe_allow_html=True)
-    cross = dff[["Q1","Q7"]].dropna()
-    cross["Year"] = cross["Q1"].map(MAPS["Q1"])
-    cross["Stress"] = cross["Q7"].map(MAPS["Q7"])
-    ct = pd.crosstab(cross["Year"], cross["Stress"])
-    ct_pct = ct.div(ct.sum(axis=1), axis=0) * 100
-    stress_order = ["None","Low","Moderate","High","Extreme"]
-    ct_pct = ct_pct.reindex(columns=[c for c in stress_order if c in ct_pct.columns])
-    year_order = ["Freshman","Sophomore","Junior","Senior","Graduate/Other"]
-    ct_pct = ct_pct.reindex([y for y in year_order if y in ct_pct.index])
+    # Heatmap: Late to Class vs Time to Find Parking
+    st.markdown('<div class="section-header">Late to Class Frequency vs. Time to Find Parking</div>', unsafe_allow_html=True)
 
-    fig = go.Figure()
-    for i, col in enumerate(ct_pct.columns):
-        fig.add_trace(go.Bar(
-            name=col, x=ct_pct.index, y=ct_pct[col],
-            marker_color=COLORS["diverging"][i % len(COLORS["diverging"])],
-            text=[f"{v:.0f}%" for v in ct_pct[col]],
-            textposition="inside", textfont=dict(size=10, color="white"),
-        ))
+    cross2 = dff[["Q5","Q6"]].dropna()
+    cross2["Parking Time"] = cross2["Q5"].map(MAPS["Q5"])
+    cross2["Late Frequency"] = cross2["Q6"].map(MAPS["Q6"])
+
+    time_order = ["< 5 min","5–15 min","15–30 min","30–45 min","> 45 min"]
+    late_order = ["Never","Rarely","Sometimes","Often","Always"]
+
+    ct2 = pd.crosstab(cross2["Late Frequency"], cross2["Parking Time"])
+    ct2 = ct2.reindex(index=[r for r in late_order if r in ct2.index],
+                      columns=[c for c in time_order if c in ct2.columns]).fillna(0)
+
+    fig = go.Figure(go.Heatmap(
+        z=ct2.values,
+        x=ct2.columns.tolist(),
+        y=ct2.index.tolist(),
+        colorscale=[[0,"#1e293b"],[0.25,"#1d4ed8"],[0.6,"#f97316"],[1.0,"#ef4444"]],
+        text=ct2.values.astype(int),
+        texttemplate="%{text}",
+        textfont=dict(size=14, color="white"),
+        showscale=True,
+        colorbar=dict(
+            tickfont=dict(color="#e2e8f0"),
+            title=dict(text="# respondents", font=dict(color="#e2e8f0")),
+        ),
+    ))
     fig.update_layout(
-        barmode="stack", height=340,
+        height=340,
         plot_bgcolor="#1e293b", paper_bgcolor="#1e293b",
-        yaxis=dict(title="% of respondents", gridcolor="#334155",
-                   tickfont=dict(color="#e2e8f0"), titlefont=dict(color="#e2e8f0")),
-        xaxis=dict(tickfont=dict(color="#e2e8f0")),
-        legend=dict(orientation="h", yanchor="bottom", y=1.02,
-                    font=dict(color="#e2e8f0")),
-        margin=dict(l=10, r=10, t=30, b=10),
+        xaxis=dict(title="Time to Find Parking",
+                   tickfont=dict(color="#e2e8f0"),
+                   title_font=dict(color="#e2e8f0")),
+        yaxis=dict(title="Late to Class Frequency",
+                   tickfont=dict(color="#e2e8f0"),
+                   title_font=dict(color="#e2e8f0")),
+        margin=dict(l=10, r=10, t=20, b=10),
     )
     st.plotly_chart(fig, use_container_width=True)
+    st.markdown("""<div class="insight-box">
+        📌 颜色越深（红/橙）代表该组合人数越多。右上角聚集说明<strong>找车时间越长，迟到越频繁</strong>。
+    </div>""", unsafe_allow_html=True)
 
 # ═══════════════════════════════════════════════════════════════════════════
 # PAGE: Solutions & Demand
